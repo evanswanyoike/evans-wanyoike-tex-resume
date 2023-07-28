@@ -1,0 +1,816 @@
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+%	The MIT License (MIT)
+%
+%	Copyright (c) 2019 Jan Küster
+%
+%	Permission is hereby granted, free of charge, to any person obtaining a copy
+%	of this software and associated documentation files (the "Software"), to deal
+%	in the Software without restriction, including without limitation the rights
+%	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%	copies of the Software, and to permit persons to whom the Software is
+%	furnished to do so, subject to the following conditions:
+%	
+%	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%	THE SOFTWARE.
+%	
+%
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+
+
+%============================================================================%
+%
+%	DOCUMENT DEFINITION
+%
+%============================================================================%
+
+%we use article class because we want to fully customize the page and don't use a cv template
+\documentclass[10pt,A4]{article}	
+
+
+%----------------------------------------------------------------------------------------
+%	ENCODING
+%----------------------------------------------------------------------------------------
+
+% we use utf8 since we want to build from any machine
+\usepackage[utf8]{inputenc}	
+
+%----------------------------------------------------------------------------------------
+%	LOGIC
+%----------------------------------------------------------------------------------------
+
+% provides \isempty test
+\usepackage{xstring, xifthen}
+
+%----------------------------------------------------------------------------------------
+%	FONT BASICS
+%----------------------------------------------------------------------------------------
+
+% some tex-live fonts - choose your own
+
+%\usepackage[defaultsans]{droidsans}
+%\usepackage[default]{comfortaa}
+%\usepackage{cmbright}
+\usepackage[default]{raleway}
+%\usepackage{fetamont}
+%\usepackage[default]{gillius}
+%\usepackage[light,math]{iwona}
+%\usepackage[thin]{roboto} 
+
+% set font default
+\renewcommand*\familydefault{\sfdefault} 	
+\usepackage[T1]{fontenc}
+
+% more font size definitions
+\usepackage{moresize}
+
+%----------------------------------------------------------------------------------------
+%	FONT AWESOME ICONS
+%---------------------------------------------------------------------------------------- 
+
+% include the fontawesome icon set
+\usepackage{fontawesome}
+
+% use to vertically center content
+% credits to: http://tex.stackexchange.com/questions/7219/how-to-vertically-center-two-images-next-to-each-other
+\newcommand{\vcenteredinclude}[1]{\begingroup
+\setbox0=\hbox{\includegraphics{#1}}%
+\parbox{\wd0}{\box0}\endgroup}
+
+% use to vertically center content
+% credits to: http://tex.stackexchange.com/questions/7219/how-to-vertically-center-two-images-next-to-each-other
+\newcommand*{\vcenteredhbox}[1]{\begingroup
+\setbox0=\hbox{#1}\parbox{\wd0}{\box0}\endgroup}
+
+% icon shortcut
+\newcommand{\icon}[3] { 							
+	\makebox(#2, #2){\textcolor{maincol}{\csname fa#1\endcsname}}
+}	
+
+% icon with text shortcut
+\newcommand{\icontext}[4]{ 						
+	\vcenteredhbox{\icon{#1}{#2}{#3}}  \hspace{2pt}  \parbox{0.9\mpwidth}{\textcolor{#4}{#3}}
+}
+
+
+% icon with website url
+\newcommand{\iconhref}[5]{ 						
+    \vcenteredhbox{\icon{#1}{#2}{#5}}  \hspace{2pt} \href{#4}{\textcolor{#5}{#3}}
+}
+
+% icon with email link
+\newcommand{\iconemail}[5]{ 						
+    \vcenteredhbox{\icon{#1}{#2}{#5}}  \hspace{2pt} \href{mailto:#4}{\textcolor{#5}{#3}}
+}
+% icon with  link
+\newcommand{\iconLink}[5]{ 						
+    \vcenteredhbox{\icon{#1}{#2}{#5}}  \hspace{2pt} \href{#4}{\textcolor{#5}{#3}}
+}
+
+%----------------------------------------------------------------------------------------
+%	PAGE LAYOUT  DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+% page outer frames (debug-only)
+% \usepackage{showframe}		
+
+% we use paracol to display breakable two columns
+\usepackage{paracol}
+
+% define page styles using geometry
+\usepackage[a4paper]{geometry}
+
+% remove all possible margins
+\geometry{top=1cm, bottom=1cm, left=1cm, right=1cm}
+
+\usepackage{fancyhdr}
+\pagestyle{empty}
+
+% space between header and content
+% \setlength{\headheight}{0pt}
+
+% indentation is zero
+\setlength{\parindent}{0mm}
+
+%----------------------------------------------------------------------------------------
+%	TABLE /ARRAY DEFINITIONS
+%---------------------------------------------------------------------------------------- 
+
+% extended aligning of tabular cells
+\usepackage{array}
+
+% custom column right-align with fixed width
+% use like p{size} but via x{size}
+\newcolumntype{x}[1]{%
+>{\raggedleft\hspace{0pt}}p{#1}}%
+
+
+%----------------------------------------------------------------------------------------
+%	GRAPHICS DEFINITIONS
+%---------------------------------------------------------------------------------------- 
+
+%for header image
+\usepackage{graphicx}
+
+% use this for floating figures
+% \usepackage{wrapfig}
+% \usepackage{float}
+% \floatstyle{boxed} 
+% \restylefloat{figure}
+
+%for drawing graphics		
+\usepackage{tikz}				
+\usetikzlibrary{shapes, backgrounds,mindmap, trees}
+
+%----------------------------------------------------------------------------------------
+%	Color DEFINITIONS
+%---------------------------------------------------------------------------------------- 
+\usepackage{transparent}
+\usepackage{color}
+
+% primary color
+% \definecolor{maincol}{RGB}{ 225, 0, 0 }
+\definecolor{maincol}{RGB}{ 93, 63, 211 }
+
+% accent color, secondary
+% \definecolor{accentcol}{RGB}{ 250, 150, 10 }
+
+% dark color
+\definecolor{darkcol}{RGB}{ 70, 70, 70 }
+%\definecolor{darkcol}{RGB}{167,199,231}
+
+% light color
+\definecolor{lightcol}{RGB}{245,245,245}
+%\definecolor{lightcol}{RGB}{167,199,231}
+
+
+
+% Package for links, must be the last package used
+\usepackage[hidelinks]{hyperref}
+
+% returns minipage width minus two times \fboxsep
+% to keep padding included in width calculations
+% can also be used for other boxes / environments
+\newcommand{\mpwidth}{\linewidth-\fboxsep-\fboxsep}
+	
+
+
+%============================================================================%
+%
+%	CV COMMANDS
+%
+%============================================================================%
+
+%----------------------------------------------------------------------------------------
+%	 CV LIST
+%----------------------------------------------------------------------------------------
+
+% renders a standard latex list but abstracts away the environment definition (begin/end)
+\newcommand{\cvlist}[1] {
+	\begin{itemize}{#1}\end{itemize}
+}
+
+%----------------------------------------------------------------------------------------
+%	 CV TEXT
+%----------------------------------------------------------------------------------------
+
+% base class to wrap any text based stuff here. Renders like a paragraph.
+% Allows complex commands to be passed, too.
+% param 1: *any
+\newcommand{\cvtext}[1] {
+	\begin{tabular*}{1\mpwidth}{p{0.98\mpwidth}}
+		\parbox{1\mpwidth}{#1}
+	\end{tabular*}
+}
+
+%----------------------------------------------------------------------------------------
+%	CV SECTION
+%----------------------------------------------------------------------------------------
+
+% Renders a a CV section headline with a nice underline in main color.
+% param 1: section title
+\newcommand{\cvsection}[1] {
+	\vspace{14pt}
+	\cvtext{
+		\textbf{\LARGE{\textcolor{darkcol}{\uppercase{#1}}}}\\[-4pt]
+		\textcolor{maincol}{ \rule{0.1\textwidth}{2pt} } \\
+	}
+}
+
+%----------------------------------------------------------------------------------------
+%	META SKILL
+%----------------------------------------------------------------------------------------
+
+% Renders a progress-bar to indicate a certain skill in percent.
+% param 1: name of the skill / tech / etc.
+% param 2: level (for example in years)
+% param 3: percent, values range from 0 to 1
+\newcommand{\cvskill}[3] {
+	\begin{tabular*}{1\mpwidth}{p{0.72\mpwidth}  r}
+ 		\textcolor{black}{\textbf{#1}} & \textcolor{maincol}{#2}\\
+	\end{tabular*}%
+	
+	\hspace{4pt}
+	\begin{tikzpicture}[scale=1,rounded corners=2pt,very thin]
+		\fill [lightcol] (0,0) rectangle (1\mpwidth, 0.15);
+		\fill [maincol] (0,0) rectangle (#3\mpwidth, 0.15);
+  	\end{tikzpicture}%
+}
+
+
+%----------------------------------------------------------------------------------------
+%	 CV EVENT
+%----------------------------------------------------------------------------------------
+
+% Renders a table and a paragraph (cvtext) wrapped in a parbox (to ensure minimum content
+% is glued together when a pagebreak appears).
+% Additional Information can be passed in text or list form (or other environments).
+% the work you did
+% param 1: time-frame i.e. Sep 14 - Jan 15 etc.
+% param 2:	 event name (job position etc.)
+% param 3: Customer, Employer, Industry
+% param 4: Short description
+% param 5: work done (optional)
+% param 6: technologies include (optional)
+% param 7: achievements (optional)
+\newcommand{\cvevent}[7] {
+	
+	% we wrap this part in a parbox, so title and description are not separated on a pagebreak
+	% if you need more control on page breaks, remove the parbox
+	\parbox{\mpwidth}{
+		\begin{tabular*}{1\mpwidth}{p{0.72\mpwidth}  r}
+	 		\textcolor{black}{\textbf{#2}} & \colorbox{maincol}{\makebox[0.32\mpwidth]{\textcolor{white}{#1}}} \\
+			\textcolor{maincol}{\textbf{#3}} & \\
+		\end{tabular*}\\[8pt]
+	
+		\ifthenelse{\isempty{#4}}{}{
+		\faicon{map-marker}	\cvtext{#4}\\
+		}
+	}
+
+
+
+	\ifthenelse{\isempty{#5}}{}{
+		\vspace{9pt}
+		{#5}
+	}
+
+	\ifthenelse{\isempty{#6}}{}{
+		\vspace{9pt}
+		\cvtext{\textbf{Technologies include:}}\\
+		{#6}
+	}
+
+	\ifthenelse{\isempty{#7}}{}{
+		\vspace{9pt}
+		\cvtext{\textbf{Links:}}\\
+		{#7}
+	}
+	\vspace{14pt}
+}
+
+%% Other Sklills
+
+
+%% OTHER SKILLS
+
+
+
+%----------------------------------------------------------------------------------------
+%	 CV META EVENT
+%----------------------------------------------------------------------------------------
+
+% Renders a CV event on the sidebar
+% param 1: title
+% param 2: subtitle (optional)
+% param 3: customer, employer, etc,. (optional)
+% param 4: info text (optional)
+\newcommand{\cvmetaevent}[4] {
+	\textcolor{maincol} {\cvtext{\textbf{\begin{flushleft}#1\end{flushleft}}}}
+
+	\ifthenelse{\isempty{#2}}{}{
+	\textcolor{darkcol} {\cvtext{\textbf{#2}} }
+	}
+
+	\ifthenelse{\isempty{#3}}{}{
+		\cvtext{{ \textcolor{darkcol} {#3} }}\\
+	}
+
+	\cvtext{#4}\\[14pt]
+}
+
+%---------------------------------------------------------------------------------------
+%	QR CODE
+%----------------------------------------------------------------------------------------
+
+% Renders a qrcode image (centered, relative to the parentwidth)
+% param 1: percent width, from 0 to 1
+\newcommand{\cvqrcode}[1] {
+	\begin{center}
+		\includegraphics[width={#1}\mpwidth]{qrcode}
+	\end{center}
+}
+
+\newcommand{\cvqrcodeGithub}[1] {
+	\begin{center}
+		\includegraphics[width={#1}\mpwidth]{github}
+	\end{center}
+}
+
+\newcommand{\cvqrcodeLinkedIn}[1] {
+	\begin{center}
+		\includegraphics[width={#1}\mpwidth]{linkedin}
+	\end{center}
+}
+
+
+
+%============================================================================%
+%
+%
+%
+%	DOCUMENT CONTENT
+%
+%
+%
+%============================================================================%
+\begin{document}
+\columnratio{0.31}
+\setlength{\columnsep}{2.2em}
+\setlength{\columnseprule}{4pt}
+\colseprulecolor{lightcol}
+\begin{paracol}{2}
+\begin{leftcolumn}
+%---------------------------------------------------------------------------------------
+%	META IMAGE
+%----------------------------------------------------------------------------------------
+\includegraphics[width=\linewidth]{evans.png}	%trimming relative to image size
+
+%---------------------------------------------------------------------------------------
+%	META SKILLS
+%----------------------------------------------------------------------------------------
+\cvsection{SKILLS}
+
+
+
+\cvskill{Flutter \& Dart} {4+ yrs} {1} \\[-2pt]
+
+\cvskill{GIT} {4 yrs} {1} \\[-2pt]
+
+\cvskill{Python} {3 yrs} {1} \\[-2pt]
+
+\cvskill{Django} {3+ yrs} {1} \\[-2pt]
+
+\cvskill{Html/CSS \& Javascript} {2 yrs} {0.72} \\[-2pt]
+
+\cvskill{Bootstrap} {2 yrs} {0.70} \\[-2pt]
+
+\cvskill{Swift} {1 Month} {0.25} \\[-2pt]
+
+%\cvskill{Django} {3+ yrs} {1} \\[-2pt]
+
+%\cvskill{GIT} {3+ yrs} {1} \\[-2pt]
+
+%\cvskill{Html/CSS} {1.5  yrs} {0.72} \\[-2pt]
+
+%\cvskill{Javascript} {1  yrs} {0.5} \\[-2pt]
+
+
+
+
+
+\vfill\null
+\cvsection{CONTACT}
+	
+\icontext{MapMarker}{12}{Nairob, Kenya}{black}\\[6pt]
+\icontext{MobilePhone}{12}{+254723013562}{black}\\[6pt]
+\iconemail{Envelope}{12}{evanswanyoi@gmail.com}{evanswanyoi@gmail.com}{black}\\[6pt]
+\faGithub \iconLink{faGithub}{12}{evanswanyoike}{https://github.com/evanswanyoike}{black}\\[6pt]
+\faLinkedin \iconLink{faLinkedin}{12}{Evans Wanyoike}{https://linkedin.com/in/evans-wanyoike}{black}\\[6pt]
+ {\faicon{skype}\iconLink{google-play}{12}{live:9af49190c36e876b}{https://skype.com}{black}}
+
+ {\faicon{hourglass}\     UTC + 3:00 }
+
+%\faGithub {evanswanyoike}
+%\social [linkedin][evans.com]
+%\extrainfo{
+%\faGithub\href {evanswanyoike.com}
+%}
+%\faLinkedin{ [https://linkedin.com/in/evans-wanyoike-02247a166}
+
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+%\cvqrcodeGithub{0.7}
+
+
+%---------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+
+%{Main thematic priority of those master studies was numerical time series bnb of non-linear dynamical systems. Besides data analysis and transformation, great importance was attached to fast algorithms and efficient software architecture.
+
+%In the master thesis a numerical approach for the detection of the direction of interaction was proposed. Analysis of this new approach was performed with the help computer simulations to find out its limits and to compare it to another commonly used approaches.
+
+%This numerical approach was highly optimised for cluster computing and implemented in c++ . For those purposes a distributed computing cluster had to be set up and administrated.}
+
+
+%{The topic for the bachelor's thesis was 'Feshbach resonance'. A numerical application was built to calculate the diagrams.}
+
+
+
+%---------------------------------------------------------------------------------------
+%	CERTIFICATION
+%----------------------------------------------------------------------------------------
+
+\cvsection{CERTIFICATIONS}
+
+\cvmetaevent
+{2023 - }
+{The complete iOS 16 Developer Course}
+{Udemy.com}
+{(Started in March so far so good)}
+
+
+\cvmetaevent
+{2019 - 2020}
+{Python \& Django - The Practical Guide}
+{Udemy.com}
+{Learnt to build web apps with Django and bootstrap}
+
+
+\cvmetaevent
+{2020}
+{The complete Flutter Development Bootcamp with Dart by Angela Yu}
+{Udemy.com}
+{Gained the necessary juniour skills in flutter}
+
+\vfill\null
+\cvqrcodeLinkedIn{0.7}
+
+\newpage
+\cvsection{EDUCATION}
+\cvmetaevent
+{2018 - 2023}
+{B. Arts Mathematic \&  Economics}
+{Egerton Uiversity}
+{Equiped with the necessary statistical skills and quantitative methods of mathematics with applied science in order to solve real
+economies problems.}
+
+\cvmetaevent
+{2014 - 2017}
+{KCSE}
+{Kijabe Boys High School}
+{}
+
+
+%\vfill
+%\cvqrcode{0.7}
+%\newpage
+\cvsection{Languages}
+
+
+\cvmetaevent
+{English}
+{}
+{Native or Bilingual}
+{}
+
+
+\cvmetaevent
+{Swahili}
+{}
+{Native or Bilingual}
+{}
+
+
+
+\cvmetaevent
+{Kikuyu}
+{}
+{Native or Bilingual}
+{}
+
+
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\vfill\null
+\cvqrcodeGithub{0.7}
+
+
+
+\newpage
+\mbox{} % hotfix to place qrcode on the bottom when there are not other elements
+\vfill
+%\cvqrcode{0.7}
+
+\end{leftcolumn}
+\begin{rightcolumn}
+%---------------------------------------------------------------------------------------
+%	TITLE  HEADER
+%----------------------------------------------------------------------------------------
+\fcolorbox{white}{darkcol}{\begin{minipage}[c][3.5cm][c]{1\mpwidth}
+	\begin {center}
+		\HUGE{ \textbf{ \textcolor{white}{ \uppercase{ EVANS WANYOIKE } } } } \\[-24pt]
+		\textcolor{white}{ \rule{0.1\textwidth}{1.25pt} } \\[4pt]
+		\large{ \textcolor{white} {Flutter and Django Developer} }
+	\end {center}
+\end{minipage}} \\[14pt]
+\vspace{-12pt}
+
+%---------------------------------------------------------------------------------------
+%	PROFILE
+%----------------------------------------------------------------------------------------
+\vfill\null
+\cvsection{PROFILE}
+
+\cvtext{Flutter and Django developer.\\
+
+As a senior Flutter and Django developer, I bring a wealth of expertise in building advanced cross-platform mobile and web applications. My skills and experience include in-depth understanding of Flutter's UI toolkit, widgets, and rendering engine, proficiency in state management patterns such as BLoC, Provider, Redux, and MobX, and experience with advanced animations and custom UI/UX implementations.
+
+In Django, I have expertise in Django's Model-View-Template (MVT) architecture, Django's ORM for efficient database management, and experience with authentication and authorization mechanisms, including custom authentication backends and OAuth integrations. I am also familiar with Django REST framework for building robust RESTful APIs.
+
+My advanced programming skills include offline data synchronization, push notifications, in-app purchases, and deep linking in mobile apps, as well as integrating social media APIs, payment gateways, and third-party services into Flutter and Django applications. I am proficient in debugging and profiling techniques for performance optimization and memory management.
+
+I am well-versed in Firebase services, such as Firebase Authentication, Firestore, Realtime Database, Cloud Messaging, and Cloud Storage, and integrating Maps SDKs, such as Google Maps and Mapbox, for implementing maps and location-based services. I am also familiar with Android SDK tools for developing, testing, and debugging Flutter applications on Android devices.
+}
+
+%---------------------------------------------------------------------------------------
+%	WORK EXPERIENCE
+%----------------------------------------------------------------------------------------
+\vfill\null
+\cvsection{WORK EXPERIENCE}
+
+\cvevent
+	{July 2022 - Feb 2023}
+	{Indexoftech - Gadgets Specs}
+	{Fullstack Developer}
+{Nairobi, Kenya}
+	{Indexoftech is a flutter application available now on the Google Play Store! The app is designed to provide an engaging and user-friendly experience for our users intrested in knowing specifications of their gadgets. \\The app integrated with our Django API to provide dynamic and up-to-date content. For example, we utilized REST APIs for fetching data from external sources, such as social media platforms, and other third-party APIs to deliver relevant and personalized content to our users.
+\\  To manage the app's state and ensure smooth data flow, we implemented a state management architecture that is Provider. These patterns help us efficiently manage the app's state, ensuring that the UI remains responsive and the data is updated in real-time.
+\\ The backend was made with Django and Django Rest Framework for the API.  Authentication with the flutter app was made with JWT(Json Web Token) and API keys. The frontend of the website was made in Bootsrap 5.
+\\
+\\
+ 	}
+	{\cvlist{
+		\item Django for backend and Rest API
+		\item Flutter for the Android/IOS/Web app
+		\item SQL Database: Postrgresql and Mysql
+		\item Linux for deployment of the web app to a virtual private linux server
+		\item Bootsrap 5 for indexoftech.com
+		\item Data scrapping with Excel
+	}}
+ {\faicon{play}\iconLink{google-play}{12}{Indexoftech - Phone Specs}{https://play.google.com/store/apps/details?id=com.indexoftech.app}{black}}
+
+ {\faicon{link}\iconLink{google-play}{12}{Indexoftech.com}{https://indexoftech.com}{black}}
+
+\vfill\null
+
+\cvevent
+	{Dec 2021 - Jan 2022}
+	{Remotasks}
+	{Data Annotation}
+	{Remote - Global}
+	{My main work was image annotation, video annotation and LIDAR to train AI models.
+}
+	{\cvlist{
+	\item Image annotation
+	\item Video annotation
+	\item LIDAR
+	\item AI \& ML
+	}}
+	{}
+
+
+
+
+\cvevent
+	{Oct 2021 - Feb 2022}
+	{(CONFIDENTIAL) - Taxi App}
+	{Flutter Developer}
+	{Nigeria}
+	{A driver's app for a request taxi app. The driver's app and admin portal was made in flutter. I used Firebase for location updating info as well as their API to deliver real time data to the app.
+}
+	{\cvlist{
+	\item Working with APIs
+	\item Firebase as a database
+	\item Firebase authentication and role management
+	\item  Flutter bloc state management
+	\item Flutter notifications
+	\item Publishing of application on the Apple App Store
+	}}
+	%{\cvlist {
+	%	\item Flutter
+	%	\item Firebase database
+	%	\item Firebase cloud messaging for real time notifications
+	%	\item 
+	%}}
+	{}
+
+\vfill\null
+
+
+
+
+%\vfill\null
+\cvevent
+	{Dec 2020 - Feb 2021}
+	{Elwak Bookshop}
+	{Flutter Developer}
+	{Eastleigh, Kenya}
+	{Point of sale flutter application. This app downloaded the products catalogue from a Django backend and saved for offline usage in flutter\_hive.  When making an order/processing a receipt, data would  be retrieved from the hive database and added to a listview that is the printed/saved by the flutter pdf package. 
+}
+	{\cvlist{
+	\item Django Rest Framework for making APIs
+	\item Flutter for the desktop app
+	\item Flutter pdf package for making and printing pdf receipts
+	\item Flutter PDF for making documents in dart
+	\item Online and offline data sync
+	}}
+	{}
+
+
+\cvevent
+	{Dec 2020 - Sep 2021}
+	{FootballDl}
+	{Flutter Developer}
+	{USA}
+	{Footballdl is a android/ios app for football fans. It incorporates real time football data, fixtures and many more.  Firebase was used for authentication, storing of user favourites and firebase cloud messaging for notifications. 
+Various third party APIs were used.
+}
+	{\cvlist{
+	\item Working with APIs
+	\item Firebase as a database
+	\item Firebase authentication and role management
+	\item  Flutter bloc state management
+	\item Flutter notifications
+	\item Localization and multi app languages with Google Cloud Translate API
+	\item Publishing of application on the Apple App Store
+	}}
+	%{\cvlist {
+	%	\item Flutter
+	%	\item Firebase database
+	%	\item Firebase cloud messaging for real time notifications
+	%	\item 
+	%}}
+{{}}
+
+ {\faicon{play}\iconLink{google-play}{12}{FootballDL - Fixtures, Predictions}{https://play.google.com/store/apps/details?id=com.sportsdl.sportsdlandroid&hl=en&gl=US}{black}}
+
+ {\faicon{apple}\iconLink{faLinkedin}{12}{FootballDL - Live Soccer Stats}{https://apps.apple.com/us/app/footballdl-live-soccer-stats/id1585592861?platform=iphone}{black}}
+
+\vfill\null
+\vfill\null
+
+
+\cvevent
+	{Jan 2021 - Feb 2021}
+	{Dynamic Wallpapers}
+	{Flutter Developer}
+	{Nakuru, Kenya}
+	{A simple wallpapers app. It had premium wallpapers and ads that would be accesed after payiong to google play.  }
+	{\cvlist{
+	\item Working with asset JSON
+	\item Google Play Billing
+	}}
+{}
+	
+
+
+
+\vfill\null
+\vfill\null
+
+
+\cvevent
+	{June 2020 - Aug 2020}
+	{Coffee SACCO Management System}
+	{Django Developer}
+	{Kiambu, Kenya}
+	{A simple Bootstrap 5 management system written in django. It had user roles for various types of users}
+	{\cvlist{
+	\item HTML, CSS and Javascript
+	\item Bootstrap 5
+	\item Linux shared hosting
+	\item
+	}}
+ {}
+
+
+\cvsection{Other Skills}
+\cvmetaevent
+{}
+{Programming in tex, the language used to compile this pdf}
+{}
+
+\cvmetaevent
+{}
+{Deploying Django site to VPS/Shared Hosting}
+{}
+
+\cvmetaevent
+{}
+{Uploading apps to the App Store and Google Play  Console}
+{}
+
+
+\cvmetaevent
+{}
+{Image \& video annotation and LIDAR}
+{}
+
+
+
+
+
+
+
+%\cvevent
+%	{Oct 11 - Oct 12}
+%	{IT Consultant}
+%	{Accenture Tech. Solutions}
+%	{Large public service project with the goal to establish a platform for handling of finance processes with a very high number of transactions. Main focus was the migration of legacy data, by assuring data quality and transformation into various formats}
+%	{\cvlist{
+%		\item Customer consulting with regard to loading / unloading interfaces
+%		\item Definition of requirements for transformation of legacy data
+%		\item Implementation of algorithms for data transformation
+%		\item Tool development for secure data transport
+%		\item Tool development for tests of data quality/interface implementation
+%	}}
+%	{\cvlist {
+%		\item Standard Linux tools, such as awk, sed, grep, ...
+%		\item Python for in-depth data analysis
+%		\item Java for transport layers
+%		\item IBM DataStage
+%	}}
+%	{\cvlist{
+%		\item Definition of uniform standards
+%		\item Introduction of the standard Linux stack as global toolset for data analysis in project
+%	}}
+
+% hotfixes to create fake-space to ensure the whole height is used
+%\mbox{}
+%\vfill
+%\mbox{}
+%\vfill
+%\mbox{}
+%\vfill
+%\mbox{}
+\end{rightcolumn}
+\end{paracol}
+\end{document}
+
